@@ -6,13 +6,13 @@
 class TCalculator
 {
 	std::string  inf, postf;
-	TStack_a<char> c = TStack_a<char>(10);// 
-	TStack_a<double> d = TStack_a<double>(10);;// 
+	TListStack<char> operators = TListStack<char>();// 
+	TListStack<double> operands = TListStack<double>();;// 
 public:
 	TCalculator(std::string& str) :inf(str) { ToPostfix(); };
 	bool isCorrect();
 private:
-	int prioritet(char op)
+	int priority(char op)
 	{
 		if (op == '(' || op == ')')
 			return 0;
@@ -25,6 +25,7 @@ private:
 	}
 	void ToPostfix();
 public:
+	double calc();
 	void set_infix(std::string str);
 	std::string get_postfix();
 	std::string get_infix();

@@ -1,71 +1,52 @@
 #pragma once
-#include <iostream>
-#include<string>
 
-template <class T>
-class TStack_a {
+template<class T>
+struct TNode {
+	T val;
+	TNode<T>* pNext;
+};
+
+template<class T>
+class TListStack {
 public:
-	TStack_a(int mS = 10) { //конструктор
-		maxSize = mS;
-		if (mS < 0) {
-			throw - 1;
-		}
-		pMem = new T[maxSize];
-		indexOfTopElement = -1;
+	TListStack() {
+		pFirst = nullptr;
 	}
-	TStack_a(const TStack_a<T>& st) {  //конструктор копирования
-		maxSize = st.maxSize;
-		pMem = new T[maxSize];
-		indexOfTopElement = st.indexOfTopElement;
-		for (int i = 0; i < indexOfTopElement + 1; i++) {
-			pMem[i] = st.pMem[i];
+	~TListStack() {
+		while (!is_empty()) {
+			pop();
 		}
 	}
-	~TStack_a() {  //деструктор
-		delete[]pMem;
-	}
-
-	bool is_empty() {
-		if (indexOfTopElement != -1)
-			return false;
-		return true;
-	}
-	bool is_full() {
-		if (indexOfTopElement + 1 == maxSize) {
-			return true;
+	void clear() {
+		while (!is_empty()) {
+			pop();
 		}
-		return false;
 	}
-
-	T top() {
-		if (!is_empty())
-			return pMem[indexOfTopElement];
-		throw "empty stack";
+	bool is_empty()const {
+		return pFirst == nullptr;
+	}
+	void push(T el) {
+		TNode<T>* newElem = new TNode<T>; //ссылка чтобы не было проблем с областью видимости
+		newElem->val = el;
+		newElem->pNext = pFirst;
+		pFirst = newElem;
 	}
 	T pop() {
 		if (is_empty()) {
-			throw "stack is empty";
+			throw - 1;
 		}
-		return pMem[indexOfTopElement--];
+		T el = pFirst->val;
+		TNode<T>* p = pFirst;
+		pFirst = pFirst->pNext;
+		delete p;
+		return el;
 	}
-	void push(T elem) {
-		if (is_full()) {
-			throw "stack overflow";
+	T top() {
+		if (is_empty()) {
+			throw - 1;
 		}
-		pMem[++indexOfTopElement] = elem;
-	}
-	void clear() {
-		indexOfTopElement = -1;
-	}
-
-	friend std::ostream& operator>>(std::ostream& os, const TStack_a& st) {
-		for (int i = 0; i <= st.indexOfTopElement; i++) {
-			os << st.pMem[i] << ' ';
-		}
-		return os;
+		return pFirst->val;
 	}
 private:
-	T* pMem;
-	int maxSize;
-	int indexOfTopElement;
+	TNode<T>* pFirst;
 };
